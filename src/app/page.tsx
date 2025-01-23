@@ -1,9 +1,10 @@
-import Image from "next/image";
+export default async function Home() {
+  const data = await fetch("https://api-noc.thiagomagano.com.br");
+  const res = await data.json();
 
-export default function Home() {
   return (
     <div className="grid place-items-center h-svh">
-      <h1 className="font-bold text-5xl font-serif">N.O.C FUTSAL</h1>
+      <h1 className="font-bold text-5xl font-serif">{res.message}</h1>
     </div>
   );
 }
