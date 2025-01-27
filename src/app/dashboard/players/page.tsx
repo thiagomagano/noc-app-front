@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const SERVER_URL = "http://localhost:3131";
 
@@ -28,10 +29,10 @@ export default function PlayersManagement() {
     name: "",
     phone: "",
     position: "linha",
-    skillLevel: "1",
-    winsCount: 0,
-    gamesPlayed: 0,
-    shirtNumber: 0,
+    skill: "1",
+    wins: 0,
+    games: 0,
+    shirt: 0,
     image: "",
   });
   const [isEditing, setIsEditing] = useState(false);
@@ -50,8 +51,7 @@ export default function PlayersManagement() {
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]:
-        name === "winsCount" || name === "shirtNumber" ? Number(value) : value,
+      [name]: name === "wins" || name === "shirt" ? Number(value) : value,
     });
   };
 
@@ -106,10 +106,10 @@ export default function PlayersManagement() {
                   name: "",
                   phone: "",
                   position: "linha",
-                  skillLevel: "1",
-                  winsCount: 0,
-                  gamesPlayed: 0,
-                  shirtNumber: 0,
+                  skill: "1",
+                  wins: 0,
+                  games: 0,
+                  shirt: 0,
                   image: "",
                 });
                 setIsDialogOpen(true);
@@ -161,7 +161,7 @@ export default function PlayersManagement() {
               <Input
                 name="winsCount"
                 type="number"
-                value={formData.winsCount}
+                value={formData.wins}
                 onChange={handleChange}
                 required
               />
@@ -169,7 +169,7 @@ export default function PlayersManagement() {
               <Input
                 name="shirtNumber"
                 type="number"
-                value={formData.shirtNumber}
+                value={formData.shirt}
                 onChange={handleChange}
                 required
               />
@@ -190,6 +190,7 @@ export default function PlayersManagement() {
       <Table>
         <TableHeader>
           <TableRow>
+            <TableHead>Avatar</TableHead>
             <TableHead>Nome</TableHead>
             <TableHead>Telefone</TableHead>
             <TableHead>Posição</TableHead>
@@ -202,12 +203,18 @@ export default function PlayersManagement() {
         <TableBody>
           {players.map((player) => (
             <TableRow key={player.id}>
+              <TableCell>
+                <Avatar>
+                  <AvatarImage src={player.image} />
+                  <AvatarFallback>CN</AvatarFallback>
+                </Avatar>
+              </TableCell>
               <TableCell>{player.name}</TableCell>
               <TableCell>{player.phone}</TableCell>
               <TableCell>{player.position}</TableCell>
-              <TableCell>{player.skillLevel}</TableCell>
-              <TableCell>{player.winsCount}</TableCell>
-              <TableCell>{player.shirtNumber}</TableCell>
+              <TableCell>{player.skill}</TableCell>
+              <TableCell>{player.wins}</TableCell>
+              <TableCell>{player.shirt}</TableCell>
               <TableCell>
                 <Button variant="outline" onClick={() => handleEdit(player)}>
                   Editar
