@@ -1,5 +1,6 @@
 export default async function Home() {
-  const data = await fetch("https://api-noc.thiagomagano.com.br");
+  //@ts-ignore
+  const data = await fetch(process.env?.API_URL);
   const res = await data.json();
 
   return (

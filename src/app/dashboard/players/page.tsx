@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, FormEventHandler } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -19,6 +19,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import Rating from "../../mycomponents/stars";
 
 const SERVER_URL = "http://localhost:3131";
 
@@ -28,11 +29,11 @@ export default function PlayersManagement() {
     id: 0,
     name: "",
     phone: "",
-    position: "linha",
-    skill: "1",
-    wins: 0,
-    games: 0,
-    shirt: 0,
+    email: "",
+    isGoalKeeper: false,
+    skill: 3,
+    stamina: 3,
+    shirt: 1,
     image: "",
   });
   const [isEditing, setIsEditing] = useState(false);
@@ -40,14 +41,14 @@ export default function PlayersManagement() {
 
   useEffect(() => {
     async function fetchPlayers() {
-      const res = await fetch(`${SERVER_URL}/players/list`);
+      const res = await fetch(`${SERVER_URL}/players`);
       const data = await res.json();
       setPlayers(data.players || []);
     }
     fetchPlayers();
   }, []);
 
-  const handleChange = (e) => {
+  const handleChange = (e: any) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
@@ -55,7 +56,7 @@ export default function PlayersManagement() {
     });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
     const method = isEditing ? "PATCH" : "POST";
     const url = isEditing
@@ -73,7 +74,7 @@ export default function PlayersManagement() {
     fetchPlayers();
   };
 
-  const handleEdit = (player) => {
+  const handleEdit = (player: any) => {
     setFormData(player);
     setIsEditing(true);
     setIsDialogOpen(true);
@@ -87,8 +88,9 @@ export default function PlayersManagement() {
   };
 
   async function fetchPlayers() {
-    const res = await fetch(`${SERVER_URL}/players/list`);
+    const res = await fetch(`${SERVER_URL}/players`);
     const data = await res.json();
+    console.log(data.players);
     setPlayers(data.players || []);
   }
 
@@ -102,15 +104,15 @@ export default function PlayersManagement() {
               onClick={() => {
                 setIsEditing(false);
                 setFormData({
-                  id: 0,
-                  name: "",
-                  phone: "",
-                  position: "linha",
-                  skill: "1",
-                  wins: 0,
-                  games: 0,
-                  shirt: 0,
-                  image: "",
+                  id: formData.id,
+                  name: formData.name,
+                  phone: formData.phone,
+                  isGoalKeeper: formData.isGoalKeeper,
+                  skill: formData.skill,
+                  shirt: formData.shirt,
+                  stamina: formData.shirt,
+                  image: formData.image,
+                  email: formData.email,
                 });
                 setIsDialogOpen(true);
               }}>
@@ -136,19 +138,18 @@ export default function PlayersManagement() {
                 onChange={handleChange}
                 required
               />
-              <Label>Posição</Label>
-              <select
-                name="position"
-                value={formData.position}
+              <Label>Email</Label>
+              <Input
+                name="email"
+                value={formData.phone}
                 onChange={handleChange}
-                required>
-                <option value="linha">Linha</option>
-                <option value="goleiro">Goleiro</option>
-              </select>
+                required
+              />
+
               <Label>Nível</Label>
               <select
-                name="skillLevel"
-                value={formData.skillLevel}
+                name="skill"
+                value={formData.skill}
                 onChange={handleChange}
                 required>
                 {[1, 2, 3, 4, 5].map((level) => (
@@ -157,14 +158,19 @@ export default function PlayersManagement() {
                   </option>
                 ))}
               </select>
-              <Label>Vitórias</Label>
-              <Input
-                name="winsCount"
-                type="number"
-                value={formData.wins}
+              <Label>Resistência</Label>
+              <select
+                name="stamina"
+                value={formData.stamina}
                 onChange={handleChange}
-                required
-              />
+                required>
+                {[1, 2, 3, 4, 5].map((stamina) => (
+                  <option key={stamina} value={stamina}>
+                    {stamina}
+                  </option>
+                ))}
+              </select>
+
               <Label>Número da Camisa</Label>
               <Input
                 name="shirtNumber"
@@ -191,30 +197,34 @@ export default function PlayersManagement() {
         <TableHeader>
           <TableRow>
             <TableHead>Avatar</TableHead>
-            <TableHead>Nome</TableHead>
-            <TableHead>Telefone</TableHead>
-            <TableHead>Posição</TableHead>
-            <TableHead>Nível</TableHead>
-            <TableHead>Vitórias</TableHead>
             <TableHead>Número</TableHead>
+            <TableHead>Nome</TableHead>
+            <TableHead>Nível</TableHead>
+            <TableHead>Resistência</TableHead>
+            <TableHead>Telefone</TableHead>
+            <TableHead>Email</TableHead>
             <TableHead>Ações</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {players.map((player) => (
+          {players.map((player: any) => (
             <TableRow key={player.id}>
               <TableCell>
                 <Avatar>
                   <AvatarImage src={player.image} />
-                  <AvatarFallback>CN</AvatarFallback>
+                  <AvatarFallback>PL</AvatarFallback>
                 </Avatar>
               </TableCell>
-              <TableCell>{player.name}</TableCell>
-              <TableCell>{player.phone}</TableCell>
-              <TableCell>{player.position}</TableCell>
-              <TableCell>{player.skill}</TableCell>
-              <TableCell>{player.wins}</TableCell>
               <TableCell>{player.shirt}</TableCell>
+              <TableCell>{player.name}</TableCell>
+              <TableCell>
+                <Rating label="" value={player.skill} />
+              </TableCell>
+              <TableCell>
+                <Rating label="" value={player.stamina} />
+              </TableCell>
+              <TableCell>{player.phone}</TableCell>
+              <TableCell>{player.email}</TableCell>
               <TableCell>
                 <Button variant="outline" onClick={() => handleEdit(player)}>
                   Editar
