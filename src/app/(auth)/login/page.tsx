@@ -25,7 +25,6 @@ export default function LoginPage() {
 
     try {
       const response = await fetch(API_URL + "/auth/login", {
-        // Ajuste para a URL do backend
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
@@ -35,6 +34,12 @@ export default function LoginPage() {
       if (!response.ok) throw new Error(result.error || "Login failed");
 
       localStorage.setItem("token", result.token);
+
+      // In client components, use document.cookie
+      document.cookie = `token=${result.token}; path=/; max-age=${
+        60 * 60 * 24 * 7
+      }`; // 7 days
+
       router.push("/dashboard"); // Redireciona após login
     } catch (error: any) {
       setErrorMessage(error.message);
@@ -43,7 +48,7 @@ export default function LoginPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100">
-      <div className="w-full max-w-md bg-black p-6 rounded-lg shadow-md">
+      <div className="w-full max-w-md  p-6 rounded-lg shadow-md">
         <h2 className="text-2xl font-bold text-center">Login</h2>
 
         {errorMessage && (
@@ -56,7 +61,7 @@ export default function LoginPage() {
             <input
               type="email"
               {...register("email", { required: "Email é obrigatório" })}
-              className="w-full p-2 border rounded mt-1 bg-gray-900"
+              className="w-full p-2 border rounded mt-1 bg-gray-200"
             />
             {errors.email && (
               <p className="text-red-500 text-xs">{errors.email.message}</p>
@@ -68,7 +73,7 @@ export default function LoginPage() {
             <input
               type="password"
               {...register("password", { required: "Senha é obrigatória" })}
-              className="w-full p-2 border rounded mt-1 bg-gray-900"
+              className="w-full p-2 border rounded mt-1 bg-gray-200"
             />
             {errors.password && (
               <p className="text-red-500 text-xs">{errors.password.message}</p>

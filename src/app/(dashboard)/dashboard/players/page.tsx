@@ -19,7 +19,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import Rating from "../../mycomponents/stars";
+import Rating from "../../../mycomponents/stars";
 
 const SERVER_URL = "http://localhost:3131";
 
